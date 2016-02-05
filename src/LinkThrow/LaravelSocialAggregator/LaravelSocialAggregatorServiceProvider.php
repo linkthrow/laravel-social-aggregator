@@ -28,13 +28,19 @@ class LaravelSocialAggregatorServiceProvider extends ServiceProvider {
 		// $this->package('linkthrow/laravel-social-aggregator');
 
 		App::register('SammyK\LaravelFacebookSdk\LaravelFacebookSdkServiceProvider');
+        App::register('Thujohn\Twitter\TwitterServiceProvider');
 
 		AliasLoader::getInstance()->alias('SocialAggregator', 'LinkThrow\LaravelSocialAggregator\SocialAggregator');
 		AliasLoader::getInstance()->alias('Facebook', 'SammyK\LaravelFacebookSdk\FacebookFacade');
+        AliasLoader::getInstance()->alias('Twitter', 'Thujohn\Twitter\Facades\Twitter');
 
         $this->publishes([
             realpath(__DIR__.'/../../migrations') => $this->app->databasePath().'/migrations',
         ]);
+
+        if(!$this->app->routesAreCached()) {
+            require __DIR__.'/../../routes.php';
+        }
 
 	}
 

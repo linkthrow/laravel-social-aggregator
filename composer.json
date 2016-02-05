@@ -12,7 +12,8 @@
     "require": {
         "php": ">=5.4.0",
         "laravel/framework": ">=5.1.1",
-        "sammyk/laravel-facebook-sdk": "~3.2"
+        "sammyk/laravel-facebook-sdk": "~3.2",
+        "thujohn/twitter": "~2.0"
     },
     "autoload": {
         "classmap": [
