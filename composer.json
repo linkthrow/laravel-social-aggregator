@@ -1,0 +1,27 @@
+{
+    "name": "linkthrow/laravel-social-aggregator",
+    "description": "Social aggregator for laravel. With this you can get feed from facebook page, twitter account or instragram",
+    "keywords": ["framework", "laravel", "despark", "facebook", "instagram", "twitter", "feeder", "feed", "social-aggregator"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hussan Choudhry",
+            "email": "hussan@uselinkthrow.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "laravel/framework": ">=5.1.1",
+        "sammyk/laravel-facebook-sdk": "~3.2"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/models"
+        ],
+        "psr-0": {
+            "LinkThrow\\LaravelSocialAggregator": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
