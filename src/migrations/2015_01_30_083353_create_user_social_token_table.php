@@ -17,7 +17,9 @@ class CreateUserSocialTokenTable extends Migration {
             $table->increments('id');
 
             $table->string('type');
-            $table->string('short_lived_token')->nullable();
+            $table->longText('entity_id');
+            $table->integer('user_id');
+            $table->string('short_lived_token');
             $table->text('long_lived_token')->nullable();
             $table->string('expires_at');
 

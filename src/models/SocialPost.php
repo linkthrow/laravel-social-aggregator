@@ -1,6 +1,6 @@
 <?php namespace LinkThrow\LaravelSocialAggregator\Models;
 
-class SocialPost extends Eloquent {
+class SocialPost extends \Eloquent {
 
 	protected $table = 'social_post';
 

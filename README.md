@@ -19,12 +19,4 @@ Once it's installed, you need to register the service provider in `app/config/ap
 );
 ```
 
-Publish the config file:
-`php artisan config:publish linkthrow/laravel-social-aggregator`
-
-Then execute migration with the following command
-
-`php artisan migrate --package="linkthrow/laravel-social-aggregator"`
-
-
 This will create new table `social_posts`. In this table package store the posts from feeds.

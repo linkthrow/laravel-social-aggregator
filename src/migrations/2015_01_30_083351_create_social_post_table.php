@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSocialPostsTable extends Migration {
+class CreateSocialPostTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -17,13 +17,7 @@ class CreateSocialPostsTable extends Migration {
 			$table->increments('id');
 
 			$table->string('type');
-			$table->string('title')->nullable();
-			$table->text('text');
-			$table->string('social_id');
-			$table->string('url');
-			$table->string('image_url')->nullable();
-			$table->boolean('show_on_page');
-			$table->timestamp('published_at');
+			$table->longText('post')->nullable();
 
 			$table->timestamps();
 		});

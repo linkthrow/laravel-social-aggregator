@@ -3,9 +3,18 @@
 use Config;
 use SammyK\LaravelFacebookSdk\LaravelFacebookSdk;
 use Facebook;
+use App;
+use LinkThrow\LaravelSocialAggregator\Models\SocialPost;
 use LinkThrow\LaravelSocialAggregator\Models\UserSocialToken;
+use LinkThrow\LaravelSocialAggregator\Models\UserSocialPost;
+use \Facebook\Entities\AccessToken;
+use Carbon\Carbon;
+use DB;
+use LinkThrow\LaravelSocialAggregator\Jobs\GetLatestFacebookPostsForUser;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class SocialFeeder {
+class SocialAggregator {
+    use DispatchesJobs;
 
 	// public static function updateTwitterPosts()
 	// {
@@ -61,51 +70,6 @@ class SocialFeeder {
 
  //        return true;
 	// }
-
-    public static function updateFacebookPosts()
-    {
-        $userFacebookTokens = UserSocialToken::type('facebook')->get();
-
-        foreach ($userFacebookTokens as $userFacebookToken) {
-
-        }
-
-        Facebook::setAccessToken(Config::get('laravel-social-feeder::facebookCredentials.accessToken'));
-
-        $pageName = Config::get('laravel-social-feeder::facebookCredentials.pageName');
-
-        $posts = Facebook::object($pageName.'/posts')->get()->all();
-
-        $lastPost = \SocialPost::type('facebook')->orderBy('published_at', 'DESC')->first();
-
-        foreach ($posts as $post)
-        {
-            $published_at = date('Y-m-d H:i:s', $post->get('created_time')->timestamp);
-
-            if ($lastPost and $lastPost->published_at >= $published_at)
-                continue;
-
-            if ( ! $post->get('message'))
-                continue;
-
-            $socialId = array_get(explode('_', $post->get('id')), 1);
-
-            $newPostData = array(
-                'type' => 'facebook',
-                'social_id' => $socialId,
-                'url' => 'https://www.facebook.com/'.$pageName.'/posts/'.$socialId,
-                'text' => $post->get('message'),
-                'image_url' => $post->get('picture'),
-                'show_on_page' => 1,
-                'published_at' => $published_at,
-            );
-
-            $newPostEntity = new \SocialPost;
-            $newPostEntity->fill($newPostData)->save();
-        }
-
-        return true;
-    }
 
     // public static function updateInstagramPosts()
     // {

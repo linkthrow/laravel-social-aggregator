@@ -1,6 +1,6 @@
 <?php namespace LinkThrow\LaravelSocialAggregator\Models;
 
-class UserSocialToken extends Eloquent {
+class UserSocialToken extends \Eloquent {
 
     protected $table = 'user_social_token';
 

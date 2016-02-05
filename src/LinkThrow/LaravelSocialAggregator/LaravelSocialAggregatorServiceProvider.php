@@ -4,7 +4,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use App;
 
-class LaravelSocialFeederServiceProvider extends ServiceProvider {
+class LaravelSocialAggregatorServiceProvider extends ServiceProvider {
 
 	/**
 	 * Indicates if loading of the provider is deferred.
@@ -25,12 +25,17 @@ class LaravelSocialFeederServiceProvider extends ServiceProvider {
 
 	public function boot()
 	{
-		$this->package('linkthrow/laravel-social-aggregator');
+		// $this->package('linkthrow/laravel-social-aggregator');
 
 		App::register('SammyK\LaravelFacebookSdk\LaravelFacebookSdkServiceProvider');
 
 		AliasLoader::getInstance()->alias('SocialAggregator', 'LinkThrow\LaravelSocialAggregator\SocialAggregator');
 		AliasLoader::getInstance()->alias('Facebook', 'SammyK\LaravelFacebookSdk\FacebookFacade');
+
+        $this->publishes([
+            realpath(__DIR__.'/../../migrations') => $this->app->databasePath().'/migrations',
+        ]);
+
 	}
 
 	/**
