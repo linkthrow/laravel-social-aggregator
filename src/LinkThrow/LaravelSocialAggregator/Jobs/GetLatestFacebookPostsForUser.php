@@ -46,7 +46,7 @@ class GetLatestFacebookPostsForUser extends Job implements SelfHandling, ShouldQ
         $facebook->setDefaultAccessToken($this->userFacebookToken->long_lived_token);
 
         $firstCall = true;
-        $feedQuery = $this->userFacebookToken->entity_id . '/feed?fields=call_to_action,caption,link,message_tags,full_picture,message,description,from,icon,name,place,source,story_tags,story,created_time,type,with_tags&limit=100';
+        $feedQuery = $this->userFacebookToken->entity_id . '/feed?fields=call_to_action,caption,link,message_tags,full_picture,message,description,from{name,picture},icon,name,place,source,story_tags,story,created_time,type,with_tags&limit=100';
 
         if($lastFacebookPostByUser = UserSocialPost::join('social_post', 'user_social_post.social_post_id', '=', 'social_post.id')->where('user_social_post.user_id', '=', $this->userFacebookToken->user_id)->where('social_post.type', '=', 'facebook')->orderBy('user_social_post.created_at', 'DESC')->first()) {
             $firstCall = false;
