@@ -16,7 +16,7 @@
         "thujohn/twitter": "~2.0",
         "vocolboy/socialite": "^1.0",
         "laravel/socialite": "^2.0",
-        "guzzlehttp/guzzle": "dev-master"
+        "guzzlehttp/guzzle": "~6.0"
     },
     "autoload": {
         "classmap": [
