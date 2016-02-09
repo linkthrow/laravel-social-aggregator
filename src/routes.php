@@ -29,11 +29,11 @@ Route::get('twitter/callback', ['as' => 'twitter.callback', function () {
                 $tokenId = $socialAccount->id;
             }
             Request::session()->forget('twitter_user_id');
-            return view('socialAggregator::closepopup')->with('id', $tokenId)->with('username', $user->nickname);
+            return redirect(config('app.website') . '/twitter-callback.html?id=' . $tokenId . '&username=' . $user->nickname);
         } else {
             abort(422, 'Cannot get user id!');
         }
-    } catch (Exception $e) {dd($e);
+    } catch (Exception $e) {
         abort(422, 'Error logging into twitter!');
     }
 }]);
@@ -66,7 +66,7 @@ Route::get('instagram/callback', ['as' => 'instagram.callback', function () {
                 $tokenId = $socialAccount->id;
             }
             Request::session()->forget('instagram_user_id');
-            return view('socialAggregator::closepopup')->with('id', $tokenId)->with('username', $user->nickname);
+            return redirect(config('app.website') . '/instagram-callback.html?id=' . $tokenId . '&username=' . $user->nickname);
         } else {
             abort(422, 'Cannot get user id!');
         }
