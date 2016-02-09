@@ -16,7 +16,7 @@
         "thujohn/twitter": "~2.0",
         "vocolboy/socialite": "^1.0",
         "laravel/socialite": "^2.0",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "dev-master"
     },
     "autoload": {
         "classmap": [
@@ -27,5 +27,5 @@
             "LinkThrow\\LaravelSocialAggregator": "src/"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
