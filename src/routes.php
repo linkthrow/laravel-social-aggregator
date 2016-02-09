@@ -20,7 +20,7 @@ Route::get('twitter/callback', ['as' => 'twitter.callback', function () {
             $userSocialToken->user_id = Request::session()->get('twitter_user_id');
             $userSocialToken->save();
             Request::session()->forget('twitter_user_id');
-            return view('oauth::closepopup')->with('id', $userSocialToken->id)->with('username', $user->nickname);
+            return view('socialAggregator::closepopup')->with('id', $userSocialToken->id)->with('username', $user->nickname);
         } else {
             abort(422, 'Cannot get user id!');
         }
@@ -48,7 +48,7 @@ Route::get('instagram/callback', ['as' => 'instagram.callback', function () {
             $userSocialToken->user_id = Request::session()->get('instagram_user_id');
             $userSocialToken->save();
             Request::session()->forget('instagram_user_id');
-            return view('oauth::closepopup')->with('id', $userSocialToken->id)->with('username', $user->nickname);
+            return view('socialAggregator::closepopup')->with('id', $userSocialToken->id)->with('username', $user->nickname);
         } else {
             abort(422, 'Cannot get user id!');
         }
