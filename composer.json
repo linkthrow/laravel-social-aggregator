@@ -15,7 +15,8 @@
         "sammyk/laravel-facebook-sdk": "~3.2",
         "thujohn/twitter": "~2.0",
         "vocolboy/socialite": "^1.0",
-        "laravel/socialite": "^2.0"
+        "laravel/socialite": "^2.0",
+        "guzzlehttp/guzzle": "~6.0"
     },
     "autoload": {
         "classmap": [
