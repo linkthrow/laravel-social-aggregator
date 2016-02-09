@@ -8,27 +8,27 @@ use LinkThrow\LaravelSocialAggregator\Models\SocialPost;
 use LinkThrow\LaravelSocialAggregator\Models\UserSocialPost;
 use DB;
 
-class AssignFacebookPostsToDatabase
+class AssignTweetsToDatabase
 {
     protected $userId;
-    protected $post;
+    protected $tweet;
 
-    public function __construct($userId, $post)
+    public function __construct($userId, $tweet)
     {
         $this->userId = $userId;
-        $this->post = $post;
+        $this->tweet = $tweet;
     }
 
     public function assign()
     {
         DB::transaction(function () {
-            $postCreatedTimestamp = strtotime($this->post['created_time']);
+            $postCreatedTimestamp = strtotime($this->tweet->created_at);
             $postCreatedTime = Carbon::createFromTimestamp($postCreatedTimestamp);
 
             //Save the post
             $socialPost = new SocialPost;
-            $socialPost->type = 'facebook';
-            $socialPost->post = json_encode($this->post);
+            $socialPost->type = 'twitter';
+            $socialPost->post = json_encode($this->tweet);
             $socialPost->created_at = $postCreatedTime;
             $socialPost->save();
 
