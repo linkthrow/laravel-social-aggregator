@@ -15,6 +15,7 @@ use LinkThrow\LaravelSocialAggregator\Classes\AssignInstagramPostsToDatabase;
 use DB;
 use Thujohn\Twitter\Facades\Twitter;
 use LinkThrow\LaravelSocialAggregator\Classes\GetInstagramMaxIdForPagination;
+use LinkThrow\LaravelSocialAggregator\Classes\CheckIfInstagramPostsContainAlreadyExtractedPost;
 use Instagram;
 
 class GetLatestInstagramPostsForUser extends Job implements SelfHandling, ShouldQueue
@@ -44,6 +45,13 @@ class GetLatestInstagramPostsForUser extends Job implements SelfHandling, Should
             }
 
             $morePosts = (isset($posts->pagination->next_max_id)) ? true : false;
+
+            //Check if posts contain any which have already been indexed therefore stop pagination
+            $checkIfPostsContainAlreadyExtractedPost = new CheckIfInstagramPostsContainAlreadyExtractedPost($posts->data, $this->userInstagramToken->user_id);
+            if($checkIfPostsContainAlreadyExtractedPost->check()) {
+                $morePosts = false;
+            }
+
             foreach ($posts->data as $post) {
                 $assignInstagramPostsToDb = new AssignInstagramPostsToDatabase($this->userInstagramToken->user_id, $post);
                 $assignInstagramPostsToDb->assign();
