@@ -11,7 +11,7 @@ Route::get('twitter/callback', ['as' => 'twitter.callback', function () {
         if (Request::session()->has('twitter_user_id')) {
             $user = Socialite::driver('twitter')->user();
             $tokenId = 0;
-            if(!$socialAccount = UserSocialToken::where('type', '=', 'twitter')->where('short_lived_token', '=', $user->token)->where('long_lived_token', '=', $user->tokenSecret)->where('user_id', '=', Request::session()->get('twitter_user_id'))->first()) {
+            if(!$socialAccount = UserSocialToken::where('type', '=', 'twitter')->where('user_id', '=', Request::session()->get('twitter_user_id'))->first()) {
                 $userSocialToken = new UserSocialToken;
                 $userSocialToken->type = 'twitter';
                 $userSocialToken->expires_at = null;
@@ -48,7 +48,7 @@ Route::get('instagram/callback', ['as' => 'instagram.callback', function () {
         if (Request::session()->has('instagram_user_id')) {
             $user = Socialite::driver('instagram')->user();
             $tokenId = 0;
-            if(!$socialAccount = UserSocialToken::where('type', '=', 'instagram')->where('short_lived_token', '=', $user->token)->where('long_lived_token', '=', $user->token)->where('user_id', '=', Request::session()->get('instagram_user_id'))->first()) {
+            if(!$socialAccount = UserSocialToken::where('type', '=', 'instagram')->where('user_id', '=', Request::session()->get('instagram_user_id'))->first()) {
                 $userSocialToken = new UserSocialToken;
                 $userSocialToken->type = 'instagram';
                 $userSocialToken->expires_at = null;
