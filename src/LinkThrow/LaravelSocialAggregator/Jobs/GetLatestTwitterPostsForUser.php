@@ -16,6 +16,8 @@ use DB;
 use Thujohn\Twitter\Facades\Twitter;
 use LinkThrow\LaravelSocialAggregator\Classes\GetTwitterMaxIdForPagination;
 use LinkThrow\LaravelSocialAggregator\Classes\GetTwitterSinceIdForPagination;
+use LinkThrow\LaravelSocialAggregator\Classes\CheckIfSocialMediaTokenHasFilters;
+use LinkThrow\LaravelSocialAggregator\Classes\CheckIfTweetHasFilter;
 
 class GetLatestTwitterPostsForUser extends Job implements SelfHandling, ShouldQueue
 {
@@ -57,11 +59,24 @@ class GetLatestTwitterPostsForUser extends Job implements SelfHandling, ShouldQu
                 $twitterCallParams['since_id']  =  $twitterSinceId;
             }
 
+            $checkIfSocialMediaTokenHasFilters = new CheckIfSocialMediaTokenHasFilters($this->userTwitterToken);
+            $filter = $checkIfSocialMediaTokenHasFilters->get();
             $tweets = json_decode(Twitter::getUserTimeline($twitterCallParams));
 
             foreach ($tweets as $tweet) {
-                $assignTweetsToDb = new AssignTweetsToDatabase($this->userTwitterToken->user_id, $tweet);
-                $assignTweetsToDb->assign();
+                $assignToDB = false;
+                if($filter) {
+                    $checkIfTweetHasFilter = new CheckIfTweetHasFilter($tweet->entities->hashtags, $filter->filter);
+                    if($checkIfTweetHasFilter->check()) {
+                        $assignToDB = true;
+                    }
+                } else {
+                    $assignToDB = true;
+                }
+                if($assignToDB) {
+                    $assignTweetsToDb = new AssignTweetsToDatabase($this->userTwitterToken->user_id, $tweet);
+                    $assignTweetsToDb->assign();
+                }
             }
 
             $twitterPaginatorData = new GetTwitterMaxIdForPagination($tweets);

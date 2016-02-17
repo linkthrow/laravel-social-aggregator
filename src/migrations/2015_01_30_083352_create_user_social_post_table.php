@@ -16,8 +16,13 @@ class CreateUserSocialPostTable extends Migration {
         {
             $table->increments('id');
 
-            $table->integer('user_id');
-            $table->string('social_post_id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('user')
+                ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->integer('social_post_id')->unsigned();
+            $table->foreign('social_post_id')->references('id')->on('social_post')
+                ->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -30,6 +35,10 @@ class CreateUserSocialPostTable extends Migration {
      */
     public function down()
     {
+        Schema::table('user_social_post', function (Blueprint $table) {
+            $table->dropForeign('user_social_post_social_post_id_foreign');
+        });
+
         Schema::drop('user_social_post');
     }
 

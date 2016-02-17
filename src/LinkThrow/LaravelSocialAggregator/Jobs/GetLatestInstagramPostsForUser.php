@@ -15,6 +15,9 @@ use LinkThrow\LaravelSocialAggregator\Classes\AssignInstagramPostsToDatabase;
 use DB;
 use Thujohn\Twitter\Facades\Twitter;
 use LinkThrow\LaravelSocialAggregator\Classes\GetInstagramMaxIdForPagination;
+use LinkThrow\LaravelSocialAggregator\Classes\CheckIfInstagramPostsContainAlreadyExtractedPost;
+use LinkThrow\LaravelSocialAggregator\Classes\CheckIfSocialMediaTokenHasFilters;
+use LinkThrow\LaravelSocialAggregator\Classes\CheckIfInstagramPostHasFilter;
 use Instagram;
 
 class GetLatestInstagramPostsForUser extends Job implements SelfHandling, ShouldQueue
@@ -43,10 +46,31 @@ class GetLatestInstagramPostsForUser extends Job implements SelfHandling, Should
                 $firstCall = false;
             }
 
+            $checkIfSocialMediaTokenHasFilters = new CheckIfSocialMediaTokenHasFilters($this->userInstagramToken);
+            $filter = $checkIfSocialMediaTokenHasFilters->get();
             $morePosts = (isset($posts->pagination->next_max_id)) ? true : false;
+
+            //Check if posts contain any which have already been indexed therefore stop pagination
+            $checkIfPostsContainAlreadyExtractedPost = new CheckIfInstagramPostsContainAlreadyExtractedPost($posts->data, $this->userInstagramToken->user_id);
+            if($checkIfPostsContainAlreadyExtractedPost->check()) {
+                $morePosts = false;
+            }
+
             foreach ($posts->data as $post) {
-                $assignInstagramPostsToDb = new AssignInstagramPostsToDatabase($this->userInstagramToken->user_id, $post);
-                $assignInstagramPostsToDb->assign();
+
+                $assignToDB = false;
+                if($filter) {
+                    $checkIfPostHasFilter = new CheckIfInstagramPostHasFilter($post->tags, $filter->filter);
+                    if($checkIfPostHasFilter->check()) {
+                        $assignToDB = true;
+                    }
+                } else {
+                    $assignToDB = true;
+                }
+                if($assignToDB) {
+                    $assignInstagramPostsToDb = new AssignInstagramPostsToDatabase($this->userInstagramToken->user_id, $post);
+                    $assignInstagramPostsToDb->assign();
+                }
             }
 
         } while($morePosts);
