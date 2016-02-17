@@ -4,7 +4,7 @@ class UserSocialToken extends \Eloquent {
 
     protected $table = 'user_social_token';
 
-    protected $hidden = array('created_at', 'updated_at', 'long_lived_token');
+    protected $hidden = array('created_at', 'updated_at');
     protected $fillable = ['type', 'short_lived_token', 'long_lived_token', 'expires_at', 'entity_id', 'user_id', 'entity_name'];
 
     private static $rules = [
