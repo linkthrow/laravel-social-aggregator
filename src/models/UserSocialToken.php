@@ -1,5 +1,8 @@
 <?php namespace LinkThrow\LaravelSocialAggregator\Models;
 
+use LinkThrow\LaravelSocialAggregator\Models\UserSocialPost;
+use LinkThrow\LaravelSocialAggregator\Models\UserSocialTokenFilter;
+
 class UserSocialToken extends \Eloquent {
 
     protected $table = 'user_social_token';
@@ -21,6 +24,20 @@ class UserSocialToken extends \Eloquent {
         'expires_at' => 'date',
         'user_id' => 'integer'
     ];
+
+    protected static function boot() {
+        parent::boot();
+
+        static::deleting(function($userSocialToken) {
+            UserSocialPost::join('social_post', 'social_post.id', '=', 'user_social_post.social_post_id')
+                                ->where('user_social_post.user_id', '=', $userSocialToken->user_id)
+                                ->where('social_post.type', '=', $userSocialToken->type)
+                                ->delete();
+
+            UserSocialTokenFilter::where('user_social_token_filter.user_social_token_id', '=', $userSocialToken->id)
+                                    ->delete();
+        });
+    }
 
     public function rules()
     {
