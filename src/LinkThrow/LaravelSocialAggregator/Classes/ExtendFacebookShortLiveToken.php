@@ -24,7 +24,20 @@ class ExtendFacebookShortLiveToken
         $clientId = Config::get('laravel-facebook-sdk.facebook_config.app_id');
         $clientSecret = Config::get('laravel-facebook-sdk.facebook_config.app_secret');
 
-        $longLivedToken = $facebook->get('oauth/access_token?grant_type=fb_exchange_token&fb_exchange_token='.$this->userFacebookToken->short_lived_token.'&client_id='.$clientId.'&client_secret='.$clientSecret);
+        $longLivedToken = '';
+
+        try {
+
+            $longLivedToken = $facebook->get('oauth/access_token?grant_type=fb_exchange_token&fb_exchange_token='.$this->userFacebookToken->short_lived_token.'&client_id='.$clientId.'&client_secret='.$clientSecret);
+
+        } catch (Facebook\Exceptions\FacebookResponseException $e) {
+            //Short lived token has expired so expire it!
+            $this->userFacebookToken->expires_at = Carbon::now();
+        } catch (Facebook\Exceptions\FacebookSDKException $e) {
+            //Short lived token has expired so expire it!
+            $this->userFacebookToken->expires_at = Carbon::now();
+        }
+
         if($longLivedToken = json_decode($longLivedToken->getBody())) {
             $this->userFacebookToken->long_lived_token = $longLivedToken->access_token;
             $this->userFacebookToken->expires_at = Carbon::now()->addSeconds($longLivedToken->expires_in);
