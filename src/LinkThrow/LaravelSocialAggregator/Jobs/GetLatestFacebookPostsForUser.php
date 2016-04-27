@@ -55,9 +55,17 @@ class GetLatestFacebookPostsForUser extends Job implements SelfHandling, ShouldQ
 
         do {
 
-            $latestPostsRaw = $facebook->get($feedQuery);
-            $latestPostsDecoded = $latestPostsRaw->getDecodedBody();
-            $latestPostsJSON = $latestPostsDecoded['data'];
+            try {
+                $latestPostsRaw = $facebook->get($feedQuery);
+                $latestPostsDecoded = $latestPostsRaw->getDecodedBody();
+                $latestPostsJSON = $latestPostsDecoded['data'];
+            } catch (Facebook\Exceptions\FacebookResponseException $e) {
+                //Session does not match current stored session!
+                $this->userFacebookToken->expires_at = Carbon::now();
+            } catch (Facebook\Exceptions\FacebookSDKException $e) {
+                //Session does not match current stored session!
+                $this->userFacebookToken->expires_at = Carbon::now();
+            }
 
             foreach ($latestPostsJSON as $post) {
                 $assignPostToDb = new AssignFacebookPostsToDatabase($this->userFacebookToken->user_id, $post);
